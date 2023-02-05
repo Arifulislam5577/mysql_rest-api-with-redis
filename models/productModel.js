@@ -17,13 +17,13 @@ class Product {
   }
 
   static async findById(id) {
-    const result = await database.query(
-      `SELECT * FROM products WHERE id = ${id}`
-    );
+    const result = await database.query("SELECT * FROM products WHERE id = ?", [
+      id,
+    ]);
     if (result.length > 0) {
       return result[0][0];
     } else {
-      return { message: "No product found with this id" };
+      throw new Error("No product found with this id");
     }
   }
 
@@ -35,7 +35,7 @@ class Product {
     if (product[0].length) {
       return await database.execute(`DELETE FROM products WHERE id = ${id}`);
     } else {
-      return null;
+      throw new Error("No product found with this id");
     }
   }
 }

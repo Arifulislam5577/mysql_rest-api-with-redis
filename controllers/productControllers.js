@@ -1,15 +1,17 @@
 import PRODUCT from "../models/productModel.js";
+import { redisClient } from "../utils/redis.config.js";
 
 export const getAllProducts = async (req, res, next) => {
   try {
     const [products] = await PRODUCT.findAll();
+    redisClient.setEx("products", 3600, JSON.stringify(products));
     res.status(200).json(products);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
 };
 
-export const findById = async (req, res, next) => {
+export const findProductById = async (req, res, next) => {
   try {
     const id = req.params.id;
     const data = await PRODUCT.findById(id);
